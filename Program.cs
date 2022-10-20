@@ -48,9 +48,11 @@ namespace DonBanano
 
                             if (worker.docI == docI_ && worker.password == pass_)
                             {
+                                Console.WriteLine("\n-----------------------------------\n");
                                 if (worker.rol == "admin")
                                 {
                                     Console.WriteLine("Bienvenido admin <3");
+                                    Console.WriteLine("Inventario Actual: ");
                                     MostrarInventario(Inventario, worker);
 
                                     MostrarOpciones(Inventario, worker);
@@ -58,21 +60,27 @@ namespace DonBanano
                                 else if(worker.rol == "empleado")
                                 {
                                     Console.WriteLine("Bienvenido empleado\n\n");
-
+                                    Console.WriteLine("Inventario Actual: ");
                                     MostrarInventario(Inventario, worker);
 
                                     MostrarOpciones(Inventario, worker);
 
-
+                                    
 
                                 }
-                                else if (true)
+                                else if (worker.rol == "servicio")
                                 {
+                                    int pasillo = 0;
+                                    Random num = new Random();
+                                    pasillo = num.Next(1, 7);
 
+                                    Console.WriteLine("Bienvenido, haga por favor aseo en el pasillo " + pasillo);
+                                    MostrarOpciones(Inventario, worker);
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Bienvenido ??? .l.");
+                                    Console.WriteLine("Quien sos .l.");
+                                    MostrarOpciones(Inventario, worker);
                                 }
                                 
                             }
@@ -105,7 +113,7 @@ namespace DonBanano
                         Console.WriteLine("Digite su contraseña: ");
                         pass = (Console.ReadLine());
 
-                        Console.WriteLine("Digite su rol (admin/empleado): ");
+                        Console.WriteLine("Digite su rol (admin/empleado/servicio): ");
                         rol = (Console.ReadLine());
 
 
@@ -149,7 +157,7 @@ namespace DonBanano
             {
                 do
                 {
-                    Console.WriteLine("\nIngrese la opción que desea realizar: \n1-Manipular inventario \n2-Vender prod \n3-Generar facturas \n4-Salir");
+                    Console.WriteLine("\nIngrese la opción que desea realizar: \n1-Manipular inventario \n2-Vender prod \n3-Salir (para generar facturas, debe vender primero)\n");
                     op = int.Parse(Console.ReadLine());
 
                     switch (op)
@@ -159,12 +167,10 @@ namespace DonBanano
                             ManipularInventario(Inventario, worker);
                             break;
                         case 2:
+                            //vender productos
                             VenderProductos(Inventario, worker);
                             break;
                         case 3:
-                            //genera facturas
-                            break;
-                        case 4:
                             //se sale
                             Console.WriteLine("Adioooooooos brokiii");
                             break;
@@ -173,9 +179,9 @@ namespace DonBanano
                             break;
                     }
 
-                } while (op != 4);
+                } while (op != 3);
 
-            }else if(worker.rol == "empleado")
+            }else if(worker.rol != "admin" )
             {
                 
                 do
@@ -221,7 +227,7 @@ namespace DonBanano
 
             do
             {
-                Console.WriteLine("Ingrese la opción que desea realizar: \n1-Crear un producto \n2-Imprimir el inventario \n3-Actualizar un producto \n4-Eliminar un producto \n5-Salir");
+                Console.WriteLine("Ingrese la opción que desea realizar: \n1-Crear un producto \n2-Imprimir el inventario \n3-Actualizar un producto \n4-Eliminar un producto \n5-Salir\n");
                 op = int.Parse(Console.ReadLine());
 
 
@@ -249,6 +255,7 @@ namespace DonBanano
                     case 3:
 
                         string nombre = "";
+                        bool existProd = false;
 
                         Console.WriteLine("Ingrese el nombre del producto que desea actualizar: ");
                         nombre = Console.ReadLine();
@@ -257,6 +264,7 @@ namespace DonBanano
                         {
                             if(nombre == p.nombre)
                             {
+                                existProd = true;
                                 int opc = 0;
                                 string nom = "";
                                 double pre = 0;
@@ -287,17 +295,24 @@ namespace DonBanano
                                         Console.WriteLine("Error, Ingrese una opción correcta");
                                         break;
                                 }
+                                Console.WriteLine("\nEl producto ingresado se modificó con exito\n");
+                            }
 
-                            }
-                            else
-                            {
-                                Console.WriteLine("Error, nombre del producto no encontrado");
-                            }
+                            
                         }
+
+                        if (existProd != true)
+                        {
+                            Console.WriteLine("\nError, el producto ingresado no existe\n");
+                        }
+
+
+                        existProd = false;
 
                         break;
                     case 4:
                         nombre = "";
+                        bool existeProd = false;
 
                         Console.WriteLine("Ingrese el nombre del producto que desea eliminar: ");
                         nombre = Console.ReadLine();
@@ -306,13 +321,19 @@ namespace DonBanano
                         {
                             if (nombre == p.nombre)
                             {
+                                existeProd = true;
                                 Inventario.Remove(p);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Error, producto no encontrado.");
+                                Console.WriteLine("\nEl producto ingresado se eliminó con exito\n");
                             }
                         }
+
+                        if (existeProd != true)
+                        {
+                            Console.WriteLine("\nError, el producto ingresado no existe\n");
+                        }
+
+
+                        existProd = false;
 
                         break;
                     case 5:
@@ -331,8 +352,12 @@ namespace DonBanano
             
 
             string  product = "";
-            double total = 0;
+            double total = 0, totalPrecioProductos = 0;
             int cant = 0, continuar = 0, id = 0;
+            bool existeProd = false;
+            Producto p2;
+
+
 
             do
             {
@@ -341,10 +366,12 @@ namespace DonBanano
                 Console.WriteLine("Que producto desea vender: ");
                 product = Console.ReadLine();
 
+
                 foreach (Producto p in Inventario)
                 {
                     if(p.nombre == product)
                     {
+                        existeProd = true;
                         Console.WriteLine("Cuantos productos desea vender: ");
                         cant = int.Parse(Console.ReadLine());
                         
@@ -353,16 +380,23 @@ namespace DonBanano
                             
                             Random n = new Random();
                             id = n.Next(10000, 99999);
-                            
+
+                            p2 = new Producto(id);
+                            p2 = p;
 
                             p.cantidad -= cant;
                             total += p.precio * cant;
+                            totalPrecioProductos += total;
+
                             
                             //ARREGLAR
-                            Factura.Add(p);
-                            p.cantidad = cant;
-                            p.precio = total;
+                            Factura.Add(p2);
+                            p2.cantidad = cant;
+                            p2.precio = total;
                             total = 0;
+
+                            p.cantidad -= p2.cantidad;
+
                         }
                         else
                         {
@@ -372,23 +406,31 @@ namespace DonBanano
                     }
                     else
                     {
-                        Console.WriteLine("Error, no está el producto");
+                        //Console.WriteLine("Error, no está el producto");
                     }
                     
                 }
 
-                Console.WriteLine("Si desea vender más producto ingrese 1: ");
-                continuar = int.Parse(Console.ReadLine());
+                if (existeProd == true)
+                {
+                    Console.WriteLine("Si desea vender otro producto ingrese 1: ");
+                    continuar = int.Parse(Console.ReadLine());
+                }
+                else
+                {
+                    Console.WriteLine("Producto no encontrada, ingrese 1 si desea vender otro producto: ");
+                    continuar = int.Parse(Console.ReadLine());
+                }
 
-                
+                existeProd = false;
 
             } while (continuar == 1);
 
-            MostrarFactura(Factura, worker);
+            MostrarFactura(Factura, worker, totalPrecioProductos);
         }
 
 
-        static void MostrarFactura(List<Producto> Factura, Trabajador worker)
+        static void MostrarFactura(List<Producto> Factura, Trabajador worker, double totalPrecioProductos)
         {
             Console.WriteLine("\nFactura de compra: \n");
             Console.WriteLine("\n\nNombre\tPrecioT\tCantidad");
@@ -396,7 +438,8 @@ namespace DonBanano
             {
                 Console.WriteLine(prod.nombre + "\t" + prod.precio + "\t" + prod.cantidad);
             }
-            Console.WriteLine("\n\n");
+
+            Console.WriteLine("\nTotal a pagar: " + totalPrecioProductos + "\n");
         }
     }
 
