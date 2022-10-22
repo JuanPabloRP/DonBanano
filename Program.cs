@@ -419,7 +419,7 @@ namespace DonBanano
                 Console.WriteLine("Que producto desea vender: ");
                 product = Console.ReadLine();
 
-s
+
                 foreach (Producto p in Inventario)
                 {
                     if (p.nombre == product)
