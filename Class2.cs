@@ -20,14 +20,14 @@ namespace DonBanano
         public int docI { get; set; }
         public string password { get; set; }
         public string rol { get; set; }
-        public Trabajador(int _id, string _nombre, int _docI, string _password,string _rol)
+        public Trabajador(int _id, string _nombre, int _docI, string _password, string _rol)
         {
             id = _id;
             nombre = _nombre;
             docI = _docI;
             password = _password;
             rol = _rol;
-            
+
         }
 
 
