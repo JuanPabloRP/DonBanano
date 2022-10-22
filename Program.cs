@@ -37,6 +37,8 @@ namespace DonBanano
                         Console.Clear();
                         int docI_;
                         string pass_ = null;
+                       
+
                         Console.WriteLine("--INICIAR SESION--\n");
 
                         Console.WriteLine("Digite su cédula");
@@ -45,11 +47,22 @@ namespace DonBanano
                         Console.WriteLine("Digite su contraseña");
                         pass_ = Console.ReadLine();
 
+
+                        if (Trabajadores.Count() == 0)
+                        {
+                            Console.WriteLine("Error, el usuario no existe.");
+                            break;
+                        }
+
                         foreach (Trabajador worker in Trabajadores)
                         {
 
+                            
+
                             if (worker.docI == docI_ && worker.password == pass_)
                             {
+
+                               
                                 Console.WriteLine("\n-----------------------------------\n");
                                 if (worker.rol == "admin")
                                 {
@@ -98,11 +111,14 @@ namespace DonBanano
                             }
                             else
                             {
-                                Console.WriteLine("Error, verifique su nombre o contraseña");
+                                
+                                Console.WriteLine("Error, verifique que: \n\t-Ingresó correctamente su documento de identidad \n\t-Ingresó correctamente su contraseña");
                             }
 
 
                         }
+                        
+
 
                         break;
 
@@ -403,7 +419,7 @@ namespace DonBanano
                 Console.WriteLine("Que producto desea vender: ");
                 product = Console.ReadLine();
 
-
+s
                 foreach (Producto p in Inventario)
                 {
                     if (p.nombre == product)
